@@ -10,7 +10,7 @@ ReactJs controls the render of components and Human-Machine Interaction
 
 Currently the front-end are designed and implement as following image:
 
-!(https://github.com/huangs0/Moodle/blob/main/Design.png?raw=true)
+![Design](https://github.com/huangs0/Moodle/blob/main/Design.png?raw=true)
 
 ElectronJs package the website into desktop app
 
