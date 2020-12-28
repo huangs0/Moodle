@@ -15,6 +15,8 @@ Currently the front-end are designed and implement as following image:
 ElectronJs package the website into desktop app
 
 Please note that since my final exam just finished at Dec.19, currently only Node.js and Database (MySQL) is finished while ReactJs and ElectronJs part is still in development and test. They're planned to be upload Jan 4. Later, if possible, iPadOs app built on React Native will also be uploaded
+
+For settings on MySQL Server, please refer to db.md
 ## Author 
 Huang Songlin, Year 2, Department of Computer Science, Faculty of Engineering, the University of Hong Kong
 
