@@ -12,6 +12,8 @@ Currently the front-end are designed and implement as following image:
 
 ![Design](https://github.com/huangs0/Moodle/blob/main/Design.png?raw=true)
 
+if you fail to see the image, please refer to Design.png under this folder or open VPN session
+
 ElectronJs package the website into desktop app
 
 Please note that since my final exam just finished at Dec.19, currently only Node.js and Database (MySQL) is finished while ReactJs and ElectronJs part is still in development and test. They're planned to be upload Jan 4. Later, if possible, iPadOs app built on React Native will also be uploaded
