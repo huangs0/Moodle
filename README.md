@@ -12,7 +12,7 @@ Currently the front-end are designed and implement as following image:
 
 ![Design](https://github.com/huangs0/Moodle/blob/main/Design.png?raw=true)
 
-if you fail to see the image, please refer to Design.png under this folder or open VPN session
+if you fail to see the image, please open VPN session
 
 ElectronJs package the website into desktop app
 
