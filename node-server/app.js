@@ -7,16 +7,16 @@ var mysql = require('mysql');
 
 // Initialize the mysql connection here and pass it into the SQL server
 
-var loginRouter = require('./routes/login');
-var courseRouter = require('./routes/course');
-var forumRouter = require('./routes/forum');
-var messageRouter = require('./routes/message');
-var newsRouter = require('./routes/news');
-var settingRouter = require('./routes/setting');
-var sourceRouter = require('./routes/source');
-var sectionRouter = require('./routes/section');
-var fileRouter = require('./routes/file');
-var assignmentRouter = require('./routes/assignment')
+var loginRouter = require('./login');
+var courseRouter = require('./course');
+var forumRouter = require('./forum');
+var messageRouter = require('./message');
+var newsRouter = require('./news');
+var settingRouter = require('./setting');
+var sourceRouter = require('./source');
+var sectionRouter = require('./section');
+var fileRouter = require('./file');
+var assignmentRouter = require('./assignment')
 
 var app = express();
 
