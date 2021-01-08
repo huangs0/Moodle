@@ -1,28 +1,22 @@
-let express = require('express');
-let router = express.Router();
-
 /**
- * Protocol for request under this router
- * 1. '/:course_id' GET: course_id should be provided in url
- * Server->Client: JSON Object {lecture,tutorial,workshop,reading,assignment} five keys, 
- * each key is an JSON array contain all resource under that type
- * Each entry under subarray has two attribute: title and file_name
- * 2. '/add/:course_id' POST: course_id should be provided in url
- * POST Body should have title, file_name as compulsory part
- * AND section_id if want to add new source in a new section (i.e. Lecture)
- * OR subsection_id if want to add new source in new subsection (i.e. Workshop, Reading, Tutorial)
- * OR assignment_id if want to add new source in new assignment
+ * This project is written in ES6
+ * 
+ * @author Huang Songlin
  */
+import express from 'express';
+let router = express.Router();
 
 // Get every source under a course, return a JSON Object containing all the source under a course
 router.get('/:course_id',(req,res)=>{
     // Get the main page of source
     var lecture = [], tutorial = [], workshop = [], reading = [], assignment = [];
-    req.sql.query('SELECT `type`, `title`, `file_name` FROM `source` WHERE `course_id` = `'
-    +req.params.course_id+'`;',(err,results,fields)=>{
+    req.sql.query(`SELECT type, title, file_name FROM source WHERE course_id = ${req.params.course_id};`,(err,results,fields)=>{
         if (err){
             console.log(err.messages);
-            res.json('Fail');
+            res.json({
+                status:false,
+                error: 'Fail to select from database'
+            });
         }
         else {
             for (let i = 0; i < results.length; i++){
@@ -57,55 +51,87 @@ router.get('/:course_id',(req,res)=>{
                     })
                 }
             }
+            res.json({
+                status: true,
+                source: {
+                lecture: lecture,
+                tutorial: tutorial,
+                workshop: workshop,
+                reading: reading,
+                assignment: assignment
+                }
+            })
         }
-    })
-    res.json({
-        lecture: lecture,
-        tutorial: tutorial,
-        workshop: workshop,
-        reading: reading,
-        assignment: assignment
     })
 })
 
 // Register a source by providing course_id, section_id or subsection_id(Return by sectionRouter), type, title, file_name(Return by the fileRouter)
-router.post('/add/:course_id',(req,res)=>{
-    // If type = lecture, read the section_id
+router.post('/:course_id',(req,res)=>{
+    if (req.identity != 'instructor'){
+        res.json({
+            status: false,
+            error: 'You are not instructor'
+        });
+    }
+    req.sql.query(`SELECT instructor FROM course WHERE course_id = '${req.params.course_id}';`,(err,results,fields)=>{
+        let instructor = JSON.parse(results[0].instructor);
+        if (instructor.indexOf(req.cookies.uid) == -1){
+            res.json({
+                status:false,
+                error: 'You are not instructor of this course'
+            });
+        }
+    })
     if (req.body.type == 'lecture'){
-        req.sql.query('INSERT INTO `source` (`course_id`,`type`,`title`,`file_name`,`section_id`) VALUES (`'+req.params.course_id
-        +'`,`lecture`,`'+req.body.title+'`,`'+req.body.file_name+'`,`'+req.body.section_id+'`);',(err,results,fields)=>{
+        req.sql.query(`INSERT INTO source (course_id,type,title,file_name,section_id) VALUES ('${req.params.course_id}','lecture','${req.body.title}','${req.body.file_name}','${req.body.section_id}');`
+        ,(err,results,fields)=>{
             if (err){
                 console.log(err.messages);
-                res.send('Fail');
+                res.json({
+                    status:false,
+                    error: 'Fail to add to database'
+                });
             }
             else {
-                res.send('Success');
+                res.json({
+                    status:true
+                });
             }
         })
     }
     // If type = assignment, read the assignment_id
     else if (req.body.type == 'assignment'){
-        req.sql.query('INSERT INTO `source` (`course_id`,`type`,`title`,`file_name`,`assignment_id`) VALUES (`'+req.params.course_id
-        +'`,`'+req.body.type+'`,`'+req.body.title+'`,`'+req.body.file_name+'`,`'+req.body.assignment_id+'`);',(err,results,fields)=>{
+        req.sql.query(`INSERT INTO source (course_id,type,title,file_name,assignment_id) VALUES ('${req.params.course_id}','${req.body.type}','${req.body.title}','${req.body.file_name}','${req.body.assignment_id}');`
+        ,(err,results,fields)=>{
             if (err){
                 console.log(err.messages);
-                res.send('Fail');
+                res.json({
+                    status:false,
+                    error: 'Fail to add to database'
+                });
             }
             else {
-                res.send('Success');
+                res.json({
+                    status:true
+                });
             }
         })
     }
     // If type != course or assignment, read the subsection_id
     else {
-        req.sql.query('INSERT INTO `source` (`course_id`,`type`,`title`,`file_name`,`subsection_id`) VALUES (`'+req.params.course_id
-        +'`,`'+req.body.type+'`,`'+req.body.title+'`,`'+req.body.file_name+'`,`'+req.body.subsection_id+'`);',(err,results,fields)=>{
+        req.sql.query(`INSERT INTO source (course_id,type,title,file_name,subsection_id) VALUES ('${req.params.course_id}','${req.body.type}','${req.body.title}','${req.body.file_name}','${req.body.subsection_id}');`
+        ,(err,results,fields)=>{
             if (err){
                 console.log(err.messages);
-                res.send('Fail');
+                res.json({
+                    status:false,
+                    error: 'Fail to add to database'
+                });
             }
             else {
-                res.send('Success');
+                res.json({
+                    status:true
+                });
             }
         })
     }
