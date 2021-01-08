@@ -7,23 +7,6 @@ import express from 'express';
 let router = express.Router();
 let fs = require('fs');
 
-/**
- * Protocol for request under this router
- * 1. '/'Get: '/course_id', should provide course_id in the url
- * Server->Client: JSON Array, if first entry is 'Fail' then submission is illegal
- * Else, every entry is an assignment under this course, with assignment_id, title, content, deadline, source and submission
- * If you're the instructor: .submission will contain all the submissions for this course
- * If you're the participator: .submission will contain all your submission
- * 2. '/new/'POST: '/new/course_id', should provide course_id in the url
- *    Meanwhile, in POST body, it should have three compulsory part:
- *    Title: title of assignemnt, Content: Description of it, Deadline: Dur of Assignment
- * Server->Client: Text Message, if 'Success', server has created a new assignment while 'False' means server fail to handle you request
- * 3. '/submit'POST: '/submit/assignment_id', should give assignment_id in the url
- *    Meanwhile, in POST body, it should have time and file_name as compulsory part
- * Server->Client: Text Message 'Fail' means fail to record submission, 'Success' means successfully record your submission
- */
-
-
 // Submit the Submission
 router.post('/submission/:assignment_id',(req,res)=>{
     if (req.identity != 'participator'){
