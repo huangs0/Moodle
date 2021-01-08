@@ -1,23 +1,14 @@
-let express = require('express');
-let router = express.Router();
-let formidable = require('formidable');
-let fs = require('fs');
-let path = require('path');
-
 /**
- * Protocol for request under this router
- * Currently, all file upload should follow one file, one request principle
- * Upload multiple file in a time is still under development
- * No GET Request will be handled, this router is only for POST new file
- * 1. '/source/:course_id' POST: please set type='file' and content-type is 'multipart/form-data'
- * course_id should be provided in url
- * Server->Client: Text Message, if 'Fail' server fail to handle your file upload
- * If successfully upload, server will send back name of this file under folder
- * 2. '/submission/:course_id' POST: please set type='file' and content-type is 'multipart/form-data'
- * course_id should be provided in url
- * Server->Client: Text Message, if 'Fail' server fail to handle your file upload
- * If successfully upload, server will send back time of submission and name of this file under folder
+ * This project is written in ES6
+ * 
+ * @author Huang Songlin
  */
+import express from 'express';
+let router = express.Router();
+import formidable from 'formidable'
+import fs from 'fs'
+import path from 'path'
+
 
 router.post('/source/:course_id',(req,res)=>{
     let form = formidable({
@@ -28,7 +19,10 @@ router.post('/source/:course_id',(req,res)=>{
     form.parse(req, (err, fields, files)=>{
         if (err){
             console.log(err.messages);
-            res.send('Fail');
+            res.json({
+                status:false,
+                error: 'Fail to upload files'
+            });
         }
         else {
             console.log(files);
@@ -39,9 +33,16 @@ router.post('/source/:course_id',(req,res)=>{
             fs.rename(files.file.path, newPath, (err)=>{
                 if (err){
                     console.log(err);
+                    res.json({
+                        status:false,
+                        error: 'Fail to save files'
+                    })
                 }
                 else {
-                    res.send(newName);
+                    res.json({
+                        status: true,
+                        file_name: newName
+                    });
                 }
             })
         }
@@ -57,7 +58,10 @@ router.post('/submission/:assignment_id',(req,res)=>{
     form.parse(req,(err, fields, files)=>{
         if (err){
             console.log(err.messages);
-            res.send('Fail');
+            res.json({
+                status:false,
+                error: 'Fail to upload files'
+            });
         }
         else {
             console.log(files);
@@ -68,9 +72,14 @@ router.post('/submission/:assignment_id',(req,res)=>{
             fs.rename(files.file.path, newPath, (err)=>{
                 if (err){
                     console.log(err);
+                    res.json({
+                        status:false,
+                        error: 'Fail to save files'
+                    })
                 }
                 else {
-                    res.send({
+                    res.json({
+                        status: true,
                         time: time,
                         file_name: newName
                     });
