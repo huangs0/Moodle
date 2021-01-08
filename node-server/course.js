@@ -6,18 +6,6 @@
 import express from 'express';
 let router = express.Router();
 
-/**
- * Protocol for request under this router
- * 1. '/:course_id' GET: course_id should provide in url
- * Server->Client: JSON Array, if first entry is 'Fail', server fail to handle your request
- * if success, then first entry is title of this course
- * second entry is the sections of this course, in JSON Array format
- * Every Element (object) in Second Entry has {section_id, title, content, source, subsection}
- * source is an array with each entry (an object) has {title, file_name} two attribute
- * subsection is an array with each entry (object) has {subsection_id, title, content, source}
- * source is an array with each entry (an object) has {title, file_name} two attribute
- *  */
-
 router.get('/:course_id',(req,res)=>{
     // Select title of class from course
     req.sql.query(`SELECT title FROM course WHERE course_id = '${req.params.course_id}';`,(err, results, fields)=>{
