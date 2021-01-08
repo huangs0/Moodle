@@ -1,22 +1,28 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var mysql = require('mysql');
+/**
+ * This project is written in ES6
+ * 
+ * @author Huang Songlin
+ */
 
-// Initialize the mysql connection here and pass it into the SQL server
+ // If using ES5, please write `let mysql = require('mysql')`
+import mysql from 'mysql';
+import createError from 'http-errors';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
 
-var loginRouter = require('./login');
-var courseRouter = require('./course');
-var forumRouter = require('./forum');
-var messageRouter = require('./message');
-var newsRouter = require('./news');
-var settingRouter = require('./setting');
-var sourceRouter = require('./source');
-var sectionRouter = require('./section');
-var fileRouter = require('./file');
-var assignmentRouter = require('./assignment')
+import loginRouter from './login';
+import loginRouter from './login';
+import courseRouter from './course';
+import forumRouter from './forum';
+import messageRouter from './message';
+import newsRouter from './news';
+import settingRouter from './setting';
+import sourceRouter from './source';
+import sectionRouter from './section';
+import fileRouter from './file';
+import assignmentRouter from './assignment';
+import dashboardRouter from './dashboard';
 
 var app = express();
 
@@ -28,9 +34,10 @@ app.use(cookieParser());
 // Create Connection to MySql Server
 let connection = mysql.createConnection({
   host: 'localhost',
+  root: 3306,
   user: 'root',
   password: 'Huang010521',
-  database: 'Moodle'
+  database: 'Moodle',
 })
 connection.connect((err)=>{
   if (err) {
@@ -53,15 +60,21 @@ app.use('/login', loginRouter);
 // Generate the user name, id, and other information need for later construcion
 app.use((req,res,next)=>{
   if (req.cookies.uid.isEmpty()){
-    res.end("Unauthorized Access");
+    res.json({
+      status:false,
+      error: 'Unauthorized Access'
+    });
   }
-  req.sql.query("SELECT identity,name FROM user WHERE `user_id` = "+req.cookies.uid+";", (err, results, fields)=>{
+  req.sql.query(`SELECT identity,name FROM user WHERE user_id = ${req.cookies.uid};`, (err, results, fields)=>{
     if (err){
       console.log(err.message);
     }
     else {
       if (results.length === 0) {
-        res.end("Unauthorized Access");
+        res.json({
+          status:false,
+          error: 'Unauthorized Access'
+        });
       }
       else if (results[0].identity == 'instructor') {
         req.identity = 'instructor';
@@ -78,33 +91,6 @@ app.use((req,res,next)=>{
   next();
 })
 
-app.get('/dashboard', (req, res)=>{
-  let course;
-  var course_return = [];
-  req.sql.query('SELECT course FROM user WHERE `user_id` = '+req.cookies.uid+";", (err, results, fields)=>{
-    if (err) {
-      console.log(err.message);
-    }
-    else {
-      course = JSON.parse(results[0].course);
-    }
-  })
-  for (let i = 0; i < course.length; i++){
-    req.sql.query('SELECT course_id, title FROM user WHERE `course_id` = '+course[i]+";", (err, results, fields)=>{
-      if (err) {
-        console.log(err.message);
-      }
-      else {
-        course_return.push({title:results[0].title, course_id: results[0].course_id});
-      }
-    })
-  }
-  res.json({
-    name: req.name,
-    course: course_return
-  });
-})
-
 app.use('/course', courseRouter);
 app.use('/forum', forumRouter);
 app.use('/message', messageRouter);
@@ -114,6 +100,7 @@ app.use('/source', sourceRouter);
 app.use('/section',sectionRouter);
 app.use('/file',fileRouter);
 app.use('/assignment',assignmentRouter);
+app.use('/dashboard', dashboardRouter);
 
 // Add file system here!
 
