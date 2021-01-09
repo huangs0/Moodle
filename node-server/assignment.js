@@ -8,7 +8,7 @@ let router = express.Router();
 let fs = require('fs');
 
 // Submit the Submission
-router.post('/submission/:assignment_id',(req,res)=>{
+router.post('/submission/:course_id/:assignment_id',(req,res)=>{
     if (req.identity != 'participator'){
         res.json({
             status:false,
