@@ -333,8 +333,8 @@ return: JSON Object
 #### Post new submission to assignment
 ```
 type: POST
-url: /assignment/submission/:assignment_id
-url params: assignment_id
+url: /assignment/submission/:course_id/:assignment_id
+url params: assignment_id,course_id
 post body: time file_name
 return: JSON Object
     status: status of post, in Boolean
